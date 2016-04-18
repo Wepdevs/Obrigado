@@ -1,0 +1,67 @@
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<dom-module id="firebase-login">
+
+	<template>
+		<firebase-auth id="auth" provider="password"
+					location="https://popping-heat-2481.firebaseio.com/"
+					status-known="{{statusKnown}}"
+					user="{{user}}">
+		</firebase-auth>
+
+
+     <firebase-collection id="ref"
+                             location="https://popping-heat-2481.firebaseio.com/"
+                             data="{{data}}">
+    </firebase-collection>
+
+
+	</template>
+
+	<script>
+		Polymer({
+			is: "firebase-login",
+			dataO:function(){console.log(this.data)},
+			ready:function() {
+				this.login();
+			}
+			,
+			properties: {
+			data:{observer:"dataO"},
+				statusKnown: {
+       	 			type: Boolean,
+       	 			observer:""
+      			},
+      			user: {
+			        type: Object,
+			        value: null
+			    },
+			},
+
+			login: function(){
+				console.log("logging in")
+				this.$.auth.login({email: 'walter.miani@gmail.com', password: 'walter.miani@gmail.com'});
+
+			},
+
+			logout: function(){
+
+				this.$.auth.logout();
+			},
+
+			computeLoginStatus: function(statusKnown) {
+		      if (statusKnown && this.user) {
+		        return 'Logged in';
+		      }
+		      if (statusKnown) {
+		        return 'Logged out';
+		      }
+		      return 'Unknown (checking status...)';
+		    }
+		});
+
+	</script>
+</dom-module>
+
