@@ -1,0 +1,186 @@
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<dom-module id="sentences-manager">
+
+<template>
+
+	<!--<firebase-collection id="categoryRef"
+                         location="[[location]]Categories/"
+                         data = "{{categories}}">
+    </firebase-collection>
+
+    <firebase-collection id="sentencesRef"
+                         location="[[location]]Sentences/"
+                         data = "{{sentences}}">
+    </firebase-collection>
+
+    <firebase-collection id="languagesRef"
+                         location="[[location]]Languages/"
+                         data = "{{languages}}">
+    </firebase-collection>-->
+
+	<paper-dropdown-menu label="Categories">
+	 	 <paper-menu class="dropdown-content" id="categoriesMenu" selected="{{chosenCategory}}" attr-for-selected="italiano">
+	 	 		<paper-item italiano="tutte">tutte</paper-item>
+		 	 <template is="dom-repeat" items="{{categories}}" as="category">
+		   		 <paper-item italiano="[[category.italiano]]">[[category.italiano]]</paper-item>
+			</template>
+	  	</paper-menu>
+	</paper-dropdown-menu>
+
+	<template is="dom-repeat" items="{{languages}}" as="language">
+		<paper-input label="[[language.name]]" id="[[language.name]]" class="language-input"></paper-input>
+
+	</template>
+
+	<paper-button raised on-tap="addSentence">ADD SENTENCE</paper-button>
+
+	<template is="dom-repeat" items="{{sentences}}" as="sentence">
+		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
+			<paper-item>
+				<span>{{sentence.italiano}}<span>
+				<paper-icon-button icon="{{hasObrigado(sentence.__firebaseKey__, userSentences)}}" on-tap="setObrigado"></paper-icon-button>
+				<template is="dom-if" if="{{isAllSelected(chosenCategory)}}">
+					<span>({{sentence.category}})</span>
+				</template>
+			</paper-item>
+		</template>
+	</template>
+
+
+	<!--<paper-button raised on-tap="logUserSentences">user sentences</paper-button> -->
+
+
+</template>
+
+
+<script>
+
+var retVal = "";
+
+Polymer({
+
+
+
+	is: 'sentences-manager',
+
+	properties: {
+
+		categories: {
+			type: Array,
+            notify: true,
+            reflectToAttribute: true
+		}, 
+
+		sentences: {
+            type: Array,
+            notify: true,
+            reflectToAttribute: true
+		},
+
+		languages: {
+			 type: Array,
+            notify: true,
+            reflectToAttribute: true
+		},
+
+		chosenCategory:{
+			notify: true,
+			//value: "tutte"
+		},
+
+		location: {
+			type: String
+		},
+
+		uid: {
+			type: String
+		}, 
+
+		userSentences: {
+			type: Array,
+			notify: true,
+			reflectToAttribute: true
+		}
+
+	},
+
+	hasObrigado: function(key, userSentences){
+
+		//console.log('setting icon');
+		
+		retVal = "thumb-up";
+
+		for(var i = 0; i < this.userSentences.length; i++){
+
+			if(this.userSentences[i]["firebaseKey"] == key){
+				retVal = "thumb-down";
+				break;
+			}
+		}
+
+		return retVal;
+	},
+
+	addSentence: function(){
+
+		var data = new Object;
+		var inputs = document.querySelectorAll('.language-input');
+
+
+		for (i = 0; i < inputs.length; i++) { 
+
+			data[inputs[i].getAttribute('id')] = inputs[i].value;
+
+		}
+
+		data.category = this.chosenCategory;
+
+		this.$.sentencesRef.add(data);
+	}, 
+
+
+	setObrigado: function(e){
+
+			var key = e.model.sentence.__firebaseKey__;
+
+			for(var i = 0; i < this.userSentences.length; i++){
+				if(this.userSentences[i].firebaseKey == key){
+					this.splice('userSentences',i,1);
+					this.notifyPath('userSentences', this.userSentences.slice());
+					break;
+				}
+			}
+			
+			this.splice('userSentences',this.userSentences.length,0,{firebaseKey: key});
+			this.notifyPath('userSentences', this.userSentences.slice());
+	},
+
+
+
+	/*fireObrigado: function(e){
+
+		this.fire('obrigado', {data: e.model.sentence});
+	},*/
+
+	isCategorySelected: function(sentence, chosenCategory){
+
+		if(chosenCategory === undefined)
+			return false;
+		if(chosenCategory == "tutte")
+			return true;
+
+		return (sentence.category === chosenCategory);
+	}, 
+
+	isAllSelected: function(chosenCategory){
+		return chosenCategory == "tutte";
+	}
+
+});
+
+</script>
+
+
+</dom-module>

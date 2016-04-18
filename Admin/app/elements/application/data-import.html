@@ -1,0 +1,194 @@
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<dom-module id="data-import">
+<template>
+    
+  <style is="custom-style">
+      #iron-pages-import{
+          height: 300px;
+      }
+      paper-input-container#loginError{
+          --paper-input-container-input-color: red;
+      }
+  </style>  
+  
+  <iron-pages selected="{{selected}}" id="iron-pages-import">
+    <div>
+        <h2>1. Select Firebase DataBase</h2>
+        <paper-input  id="DBConn" value="{{location}}"
+        error-message="needs some text" required auto-validate>{{location}}</paper-input>  
+    </div>
+    <div>
+        <h2>2. Databse Authentication</h2>
+        <paper-input label="Email"  id="user" value="{{user}}"
+        error-message="needs some text" required auto-validate></paper-input>
+        <paper-input label="Password"  id="password" value="{{password}}"
+        error-message="needs some text" required auto-validate></paper-input>
+        <!--<paper-input label="login error" id="loginError"></paper-input>-->
+        <paper-input-container id="loginError">
+        <!--<label>Login error</label>-->
+        <input is="iron-input">
+        </paper-input-container>
+        
+        
+    </div>
+    <div>
+        <h2>3. Select JSON file to upload into database</h2>
+        <paper-input type="file" label="file"></paper-input>
+   </div>
+   <div>
+        <h2>4. Select in which branch of Firebase to upload</h2>
+        <paper-dropdown-menu label="Branches">
+            <paper-menu class="dropdown-content" id="branchesMenu" selected="{{chosenBranch}}">
+                <template is="dom-repeat" items="{{branches}}" as="branch">
+                    <paper-item>[[branch.name]]</paper-item>
+                </template>
+            </paper-menu>
+	   </paper-dropdown-menu>
+   </div>
+   <div>
+        <h2>5. Insert into DB</h2>
+   </div>
+   <div>
+        <h2>6. Result</h2>
+   </div>
+  </iron-pages>
+  <paper-button on-tap="prevPage" hidden$="{{_computeHiddenPrev(selected)}}">PREV</paper-button>
+  <paper-button on-tap="nextPage" hidden$="{{_computeHiddenNext(selected)}}">NEXT</paper-button>
+  
+</template>
+    
+<script>
+    
+    Polymer({
+        is: "data-import",
+        
+        properties:{
+            location: String,
+            user: {
+                type: String,
+               value: "walter.miani@gmail.com"
+            },
+            ref: Object,
+            password: {
+                type: String,
+               value: "walter.miani@gmail.com"
+            },
+            branches: {
+                type: Object,
+                value: [] 
+                //computed: 'getBranches(ref)'
+            },
+            chosenBranch: Object,
+            selected: {
+                type: Number, 
+                value: 0
+            }
+        },
+        
+        getBranches: function(ref){
+            
+            console.log('get branches');
+            
+            var branches = [{name: "ciao"}];
+            
+            ref.once("value", function (snapshot) {
+                
+                snapshot.forEach(function (childsnapshot) {
+                    
+                    var key = childsnapshot.key();
+                    branches.push({name: key});
+                    // console.log(branches);
+                });
+            });
+            //return branches;
+            //this.branches = branches.slice();
+            //  console.log(this.branches);
+            // this.branches = branches.slice();
+            // console.log(branches);
+            //  console.log(this.branches);
+            
+            for(var i = 0; i < branches.length; i++){
+                
+                console.log(branches[i].name);
+                this.branches.push({name: branches[i].name});
+            }
+            
+            console.log(this.branches);
+            
+        },
+        
+        nextPage: function(){
+            var pages = document.querySelector('#iron-pages-import');
+            var errorText = document.querySelector('#loginError input');
+           
+            switch(this.selected){
+                case 0: 
+                    if(this.$.DBConn.validate())
+                    this.ref = new Firebase(this.location);
+                        pages.selectNext();
+                    break;
+                case 1:
+                    if(this.$.user.validate() && this.$.password.validate()){
+                        this.ref.authWithPassword({
+                        email    : this.user,
+                        password : this.password
+                        }, function(error, authData) {
+                            if (error) {
+                                switch (error.code) {
+                                case "INVALID_EMAIL":
+                                    //console.log("The specified user account email is invalid.");
+                                    errorText.value = "The specified user account email is invalid.";
+                                    break;
+                                case "INVALID_PASSWORD":
+                                    //console.log("The specified user account password is incorrect.");
+                                    errorText.value = "The specified user account password is incorrect."
+                                    break;
+                                case "INVALID_USER":
+                                    //console.log("The specified user account does not exist.");
+                                    errorText.value = "The specified user account does not exist."
+                                    break;
+                                default:
+                                    //console.log("Error logging user in:", error);
+                                    loginError = "Error logging user in";
+                                }
+                            } else {
+                                console.log("Authenticated successfully!");
+                                pages.selectNext();
+                            }
+                        });
+                        
+                        this.getBranches(this.ref);
+                    } 
+                    break;
+                case 5:
+                    break;
+                    default:
+                        pages.selectNext();
+            }
+        },
+        
+        prevPage: function(){
+            var pages = document.querySelector('#iron-pages-import');
+            
+            switch(this.selected){
+                case 0: 
+                    break;
+                default:
+                    pages.selectPrevious();
+            }   
+        },
+        
+        _computeHiddenNext: function(){
+            return this.selected == 5;
+        },
+        _computeHiddenPrev: function(){
+            return this.selected == 0;
+        }
+    });
+</script>
+    
+    
+</dom-module>
