@@ -41,9 +41,9 @@
    <div>
         <h2>4. Select in which branch of Firebase to upload</h2>
         <paper-dropdown-menu label="Branches">
-            <paper-menu class="dropdown-content" id="branchesMenu" selected="{{chosenBranch}}">
+            <paper-menu class="dropdown-content" id="branchesMenu" selected="{{chosenBranch}}" attr-for-selected="name">
                 <template is="dom-repeat" items="{{branches}}" as="branch">
-                    <paper-item>[[branch.name]]</paper-item>
+                    <paper-item name="[[branch.name]]">[[branch.name]]</paper-item>
                 </template>
             </paper-menu>
 	   </paper-dropdown-menu>
@@ -101,7 +101,6 @@
                 
                for(var i = 0; i < branches.length; i++){
                    this.branches.push({name: branches[i].name});
-                   console.log('pushing');
                }
                
                this.notifyPath('branches', this.branches.slice());
@@ -109,9 +108,11 @@
             }, this);
         },
         
-        chiama: function(){
-            console.log('notifying');
-            this.notifyPath('branches', this.branches.slice());
+        importData: function(){
+            
+            var ref = new Firebase(this.location + this.chosenBranch + '/');
+            
+            console.log('importing data into ' + this.location + this.chosenBranch + '/');
         },
         
         nextPage: function(){
@@ -156,6 +157,9 @@
                         
                         this.getBranches(this.ref);
                     } 
+                    break;
+                case 3:
+                    this.importData();
                     break;
                 case 5:
                     break;
