@@ -78,7 +78,7 @@
             },
             branches: {
                 type: Object,
-                value: [] 
+                value: [{name: "iniziale"}] 
                 //computed: 'getBranches(ref)'
             },
             chosenBranch: Object,
@@ -90,9 +90,7 @@
         
         getBranches: function(ref){
             
-            console.log('get branches');
-            
-            var branches = [{name: "ciao"}];
+            var branches = [];
             
             ref.once("value", function (snapshot) {
                 
@@ -100,23 +98,15 @@
                     
                     var key = childsnapshot.key();
                     branches.push({name: key});
-                    // console.log(branches);
                 });
-            });
-            //return branches;
-            //this.branches = branches.slice();
-            //  console.log(this.branches);
-            // this.branches = branches.slice();
-            // console.log(branches);
-            //  console.log(this.branches);
-            
-            for(var i = 0; i < branches.length; i++){
                 
-                console.log(branches[i].name);
-                this.branches.push({name: branches[i].name});
-            }
+               for(var i = 0; i < branches.length; i++){
+                   this.push({name: branches[i].name});
+               }
+            }, this.branches);
             
-            console.log(this.branches);
+            
+             this.notifyPath('branches', this.branches.slice());
             
         },
         
