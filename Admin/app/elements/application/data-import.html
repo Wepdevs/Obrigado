@@ -78,8 +78,7 @@
             },
             branches: {
                 type: Object,
-                value: [{name: "iniziale"}] 
-                //computed: 'getBranches(ref)'
+                value: []
             },
             chosenBranch: Object,
             selected: {
@@ -101,13 +100,18 @@
                 });
                 
                for(var i = 0; i < branches.length; i++){
-                   this.push({name: branches[i].name});
+                   this.branches.push({name: branches[i].name});
+                   console.log('pushing');
                }
-            }, this.branches);
-            
-            
-             this.notifyPath('branches', this.branches.slice());
-            
+               
+               this.notifyPath('branches', this.branches.slice());
+               
+            }, this);
+        },
+        
+        chiama: function(){
+            console.log('notifying');
+            this.notifyPath('branches', this.branches.slice());
         },
         
         nextPage: function(){
