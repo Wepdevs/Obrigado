@@ -36,7 +36,7 @@
     </div>
     <div>
         <h2>3. Select JSON file to upload into database</h2>
-        <paper-input type="file" label="file"></paper-input>
+        <paper-input type="file" label="file" id="file"></paper-input>
    </div>
    <div>
         <h2>4. Select in which branch of Firebase to upload</h2>
@@ -84,7 +84,8 @@
             selected: {
                 type: Number, 
                 value: 0
-            }
+            },
+            file: Object
         },
         
         getBranches: function(ref){
@@ -108,11 +109,36 @@
             }, this);
         },
         
+        readFile: function(){
+            
+            // var ref = new Firebase(this.location + this.chosenBranch + '/');
+            
+            // console.log('importing data into ' + this.location + this.chosenBranch + '/');
+            console.log('dentro al read');
+            this.file = this.$.file.file;
+            var reader = new FileReader();
+            
+            reader.onLoad = this.receivedText;
+            
+            reader.readAsText(this.$.file.file);
+        },
+        
+        receivedText: function(e){
+            var lines = e.target.result;
+            var json = JSON.parse(lines);
+            console.log(json);
+        },
+        
+        saveFile: function(e){
+            
+            console.log('salvo il file');
+            this.file = e.target.files[0];
+            event.stopPropagation();
+            event.preventDefault();
+        },
+        
         importData: function(){
             
-            var ref = new Firebase(this.location + this.chosenBranch + '/');
-            
-            console.log('importing data into ' + this.location + this.chosenBranch + '/');
         },
         
         nextPage: function(){
@@ -155,8 +181,13 @@
                             }
                         });
                         
+                        this.$.file.addEventListener('change', this.saveFile);
+                        
                         this.getBranches(this.ref);
                     } 
+                    break;
+                case 2:
+                    this.readFile();
                     break;
                 case 3:
                     this.importData();
