@@ -85,7 +85,8 @@
                 type: Number, 
                 value: 0
             },
-            file: Object
+            file: Object,
+            jsonData: Object
         },
         
         getBranches: function(ref){
@@ -109,26 +110,6 @@
             }, this);
         },
         
-        readFile: function(){
-            
-            // var ref = new Firebase(this.location + this.chosenBranch + '/');
-            
-            // console.log('importing data into ' + this.location + this.chosenBranch + '/');
-            console.log('dentro al read');
-            this.file = this.$.file.file;
-            var reader = new FileReader();
-            
-            reader.onLoad = this.receivedText;
-            
-            reader.readAsText(this.$.file.file);
-        },
-        
-        receivedText: function(e){
-            var lines = e.target.result;
-            var json = JSON.parse(lines);
-            console.log(json);
-        },
-        
         saveFile: function(e){
             
             console.log('salvo il file');
@@ -137,8 +118,42 @@
             event.preventDefault();
         },
         
-        importData: function(){
+        readFile: function(){
+           
+            this.file = this.$.file.file;
+            var reader = new FileReader();
             
+            if(this.file){
+                
+                    reader.onload = function(e){
+                    var output = e.target.result;
+                    this.jsonData = JSON.parse(output);
+                };
+                reader.readAsText(this.file);
+            }
+        },
+        
+        importData: function(){
+             console.log('dentro import');
+             
+             this.file = this.$.file.file;
+             var reader = new FileReader();
+            
+            if(this.file){
+                    
+                   reader.onload = function(e){
+                   var output = e.target.result;
+                   var json = JSON.parse(output);
+                    
+                   var branchRef = this.ref.child(this.chosenBranch); 
+                   console.log('importing data into ' + this.chosenBranch);
+                   
+                   for (var index in json) {
+                       branchRef.push(json[index]);
+                   }
+                }.bind(this);
+                reader.readAsText(this.file);
+            }
         },
         
         nextPage: function(){
@@ -187,7 +202,8 @@
                     } 
                     break;
                 case 2:
-                    this.readFile();
+                   // this.readFile();
+                    pages.selectNext();
                     break;
                 case 3:
                     this.importData();
