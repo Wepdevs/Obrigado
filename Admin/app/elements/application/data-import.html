@@ -202,8 +202,12 @@
                     } 
                     break;
                 case 2:
-                   // this.readFile();
-                    pages.selectNext();
+                    if(this.validateFile()){
+                        pages.selectNext();
+                    }   
+                    else{
+                        alert('Upload a file!');
+                    }
                     break;
                 case 3:
                     this.importData();
@@ -226,8 +230,26 @@
             }   
         },
         
+        validateFile: function(){
+            
+            return (this.$.file.file);  
+        },
+        
         _computeHiddenNext: function(){
-            return this.selected == 5;
+            
+            var retVal = false;
+            
+            switch(this.selected){
+                // case 2:
+                //     if(!this.$.file.file)
+                //         return true;
+                //     break;
+                case 5:
+                    retVal = true;
+                    break; 
+            }
+            
+            return retVal;
         },
         _computeHiddenPrev: function(){
             return this.selected == 0;
