@@ -29,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .languageConf {
 
         height:64px;
-        background-color:blue;
+        background-color: burlywood;
 
       }
 
@@ -45,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <firebase-login></firebase-login>
                 <!--<match-list></match-list>-->
                 <div class="languageConf">
-                  ITALIANO/ENGLISH
+                  {{fromLanguage}}//{{toLanguage}}
                 </div>
 
                  <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="slide-from-top-animation" exit-animation="slide-down-animation">
@@ -76,7 +76,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       properties: {
         selected:{value:1},
-        selectedCategory:{value:"",notify:true}
+        selectedCategory:{value:"",notify:true},
+        fromLanguage: {value:"Italiano"},
+        toLanguage: {value:"English"}
       }
     });
   })();
