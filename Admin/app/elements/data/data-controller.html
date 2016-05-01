@@ -38,6 +38,7 @@
         
     <paper-button on-tap="login" raised>LOGIN</paper-button>
     <paper-button on-tap="logout" raised>LOGOUT</paper-button>
+    <paper-button on-tap="provaFirebase" raised>BAM</paper-button>
     <paper-label  raised>{{user.uid}}</paper-label>
 
 </template>
@@ -70,6 +71,40 @@
 					notify: true
 				}
 		},
+        
+        provaFirebase: function(){
+            
+            var ref = new Firebase('https://popping-heat-2481.firebaseio.com/prova');
+            // var newDato = ref.push();
+            // newDato.set({nome: 'nome2', cognome: 2});
+            var dato = [{nome: 'nome4', cognome: 4},{nome:'nome5', cognome: 5}];
+           // ref.set(dato);
+            var ids = [];
+            
+            ref.once('value', function(snap){
+                 snap.forEach(function (childsnapshot) {
+                    var key = childsnapshot.key();
+                    console.log(key);
+                    ids.push({id: key});
+                });
+                
+                var max = 0;
+                for(var i = 0; i < ids.length; i++){
+                    if(ids[i].id > max)
+                        max = ids[i].id;
+                }
+                console.log(max);
+                
+                var nuovoId = Number(max) + Number(1);
+                
+                this.child(nuovoId).set({nome: 'nuovo', cognome: 6});
+                
+            }, ref);
+            
+            
+            
+            //ref.child(3).set(dato);
+        },
         
         _computeQuery: function(location){
             var query;

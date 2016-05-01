@@ -149,7 +149,7 @@
                    console.log('importing data into ' + this.chosenBranch);
                    
                    for (var index in json) {
-                       branchRef.push(json[index]);
+                       branchRef.child(index).set(json[index]);
                    }
                 }.bind(this);
                 reader.readAsText(this.file);
