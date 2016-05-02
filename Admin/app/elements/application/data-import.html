@@ -151,12 +151,9 @@
                    branchRef.once('value', function(snap){
                        snap.forEach(function(childSnap){
                            var key = childSnap.key();
-                           entries.push({id: key});
+                           if(!isNaN(key))
+                               entries.push({id: key});
                        });
-                       
-                       // TODO : aggiungere controllo che se non
-                       // è un number non lo salvo tra le entries
-                       // in modo da gestire anche una base dati semi sporca
                    
                         // finding max Id among ones already present
                         var max = 0;
