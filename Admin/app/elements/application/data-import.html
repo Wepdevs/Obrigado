@@ -144,13 +144,39 @@
                    reader.onload = function(e){
                    var output = e.target.result;
                    var json = JSON.parse(output);
+                   var entries = [];
                     
                    var branchRef = this.ref.child(this.chosenBranch); 
                    console.log('importing data into ' + this.chosenBranch);
                    
-                   for (var index in json) {
-                       branchRef.child(index).set(json[index]);
-                   }
+                   
+                   branchRef.once('value', function(snap){
+                       snap.forEach(function(childSnap){
+                           var key = childSnap.key();
+                           entries.push({id: key});
+                       });
+                       
+                       //aggiungere controllo che se non
+                       // è un number non lo salvo tra le entries
+                       //in modo da gestire anche una base dati semi sporca
+                   
+                        var max = 0;
+                        for(var i = 0; i < entries.length; i++){
+                                    if(entries[i].id > max)
+                                    max = entries[i].id;
+                        }
+                        
+                        console.log(max);
+                        
+                        var nuovoId = Number(max) + Number(1);
+                        for (var index in json) {
+                            branchRef.child(nuovoId).set(json[index]);
+                            nuovoId = Number(nuovoId) + Number(1);
+                        }
+                   });
+                   
+                   
+                   
                 }.bind(this);
                 reader.readAsText(this.file);
             }
@@ -211,6 +237,7 @@
                     break;
                 case 3:
                     this.importData();
+                 //   pages.selectNext();
                     break;
                 case 5:
                     break;
