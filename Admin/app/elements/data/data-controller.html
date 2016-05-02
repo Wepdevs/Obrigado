@@ -87,7 +87,7 @@
                     console.log(key);
                     ids.push({id: key});
                 });
-                
+                // cerco il max tra gli id presenti
                 var max = 0;
                 for(var i = 0; i < ids.length; i++){
                     if(ids[i].id > max)
@@ -95,7 +95,6 @@
                 }
                 
                 var nuovoId = Number(max) + Number(1);
-                
                 this.child(nuovoId).set({nome: 'nuovo', cognome: 6});
                 
             }, ref);

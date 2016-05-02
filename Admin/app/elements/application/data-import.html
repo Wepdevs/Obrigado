@@ -49,14 +49,12 @@
 	   </paper-dropdown-menu>
    </div>
    <div>
-        <h2>5. Insert into DB</h2>
-   </div>
-   <div>
-        <h2>6. Result</h2>
+        <h2>5. Result</h2>
+        <div>Import completed!</div>
    </div>
   </iron-pages>
-  <paper-button on-tap="prevPage" hidden$="{{_computeHiddenPrev(selected)}}">PREV</paper-button>
-  <paper-button on-tap="nextPage" hidden$="{{_computeHiddenNext(selected)}}">NEXT</paper-button>
+  <paper-button on-tap="prevPage" disabled$="{{_computeHiddenPrev(selected)}}">PREV</paper-button>
+  <paper-button on-tap="nextPage" disabled$="{{_computeHiddenNext(selected)}}">NEXT</paper-button>
   
 </template>
     
@@ -156,26 +154,23 @@
                            entries.push({id: key});
                        });
                        
-                       //aggiungere controllo che se non
+                       // TODO : aggiungere controllo che se non
                        // è un number non lo salvo tra le entries
-                       //in modo da gestire anche una base dati semi sporca
+                       // in modo da gestire anche una base dati semi sporca
                    
+                        // finding max Id among ones already present
                         var max = 0;
                         for(var i = 0; i < entries.length; i++){
                                     if(entries[i].id > max)
                                     max = entries[i].id;
                         }
                         
-                        console.log(max);
-                        
-                        var nuovoId = Number(max) + Number(1);
+                        var newId = Number(max) + Number(1);
                         for (var index in json) {
-                            branchRef.child(nuovoId).set(json[index]);
-                            nuovoId = Number(nuovoId) + Number(1);
+                            branchRef.child(newId).set(json[index]);
+                            newId = Number(newId) + Number(1);
                         }
                    });
-                   
-                   
                    
                 }.bind(this);
                 reader.readAsText(this.file);
@@ -237,9 +232,7 @@
                     break;
                 case 3:
                     this.importData();
-                 //   pages.selectNext();
-                    break;
-                case 5:
+                    pages.selectNext();
                     break;
                     default:
                         pages.selectNext();
@@ -263,20 +256,7 @@
         },
         
         _computeHiddenNext: function(){
-            
-            var retVal = false;
-            
-            switch(this.selected){
-                // case 2:
-                //     if(!this.$.file.file)
-                //         return true;
-                //     break;
-                case 5:
-                    retVal = true;
-                    break; 
-            }
-            
-            return retVal;
+            return this.selected == 4;
         },
         _computeHiddenPrev: function(){
             return this.selected == 0;
