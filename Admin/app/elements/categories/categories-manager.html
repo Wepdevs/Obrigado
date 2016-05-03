@@ -43,9 +43,7 @@
 		   	    	<div>
 
 						<template is="dom-repeat" items="[[languages]]" as="language">
-
 						<paper-input class="category-input" label="[[language.name]]" id="[[language.name]]" required auto-validate error-message="needs some text"></paper-input>
-
 		        		</template>
 
 
@@ -65,8 +63,18 @@
 	  <paper-button dialog-dismiss>Close</paper-button>
 	  <paper-button on-tap="submitEditDetail">Accept</paper-button>
 	</paper-dialog>
+    
+    <paper-dialog id="dialogEditIcon" entry-animation="scale-up-animation"
+	              exit-animation="fade-out-animation">
+		<div>edit icon form</div>
+	  <paper-input id="editIconInput"></paper-input>
+	  <paper-input id="editIconInputOld" hidden></paper-input>
+      <paper-input id="editIconInputOldKey" hidden></paper-input>
+	  <paper-button dialog-dismiss>Close</paper-button>
+	  <paper-button on-tap="submitEditIcon">Accept</paper-button>
+	</paper-dialog>
 
-<!-- TODO: se non si riesce ad usare la chosec category, per aprire una modale con dettagli, cancellare -->
+<!-- TODO: se non si riesce ad usare la chosen category, per aprire una modale con dettagli, cancellare -->
 
         <h3>Category List</h3>
         
@@ -79,6 +87,7 @@
 
         		<div>[[category.italiano]] 
         			<paper-button on-click="openDetail" raised>Details</paper-button>
+                    <paper-button on-click="openIcon" raised>Icon</paper-button>
         			<paper-button on-click="deleteData">X</paper-button>
 
         			<template is="dom-repeat" items="[[languages]]" as="language">
@@ -129,6 +138,21 @@
 				type: String
 			}
 		},
+        
+        openIcon: function(e){
+            
+            var icon = e.model.category.icon;
+            var key =  e.model.category.__firebaseKey__;
+            
+            if(icon === undefined)
+                icon = "";
+                
+            document.getElementById('editIconInput').value = icon;
+			document.getElementById('editIconInputOld').value = icon;
+            document.getElementById('editIconInputOldKey').value = key;
+            
+            this.$.dialogEditIcon.open();
+        },
 
 		openCreate: function(){
 
@@ -142,7 +166,6 @@
 
 		editDetail: function(e){
 
-
 			var location = this.location + 'Categories/' + e.model.category.__firebaseKey__ + '/' + e.model.language.name;
 
 			var ref = new Firebase(location);
@@ -152,7 +175,6 @@
 			   data = snapshot.val();
 			});
 
-
 			document.getElementById('editDetailInput').value = data;
 			document.getElementById('editDetailInputOld').value = data;
 			document.getElementById('editDetailInputLanguage').value = e.model.language.name;
@@ -161,6 +183,20 @@
 			this.$.dialogEditDetail.open();
 
 		},
+        
+        submitEditIcon: function(){
+            var updateValue = document.getElementById("editIconInput").value;
+			var originalValue = document.getElementById("editIconInputOld").value;
+            var firebaseKey = document.getElementById("editIconInputOldKey").value;
+            
+            var location = this.location + 'Categories/' + firebaseKey;
+            
+            var entry = {icon: updateValue};
+
+            var ref = new Firebase(location);
+            ref.update(entry);
+            this.$.dialogEditIcon.toggle();
+        },
 
 		submitEditDetail: function(){
 
@@ -223,8 +259,11 @@
 		},
 
 		deleteData: function(e){
-
-			this.$.ref.removeByKey(e.model.category.__firebaseKey__);
+            
+            var location = this.location + 'Categories/' + e.model.category.__firebaseKey__;
+            var ref= new Firebase(location);
+            
+			ref.remove();
 		}
 	});
 
