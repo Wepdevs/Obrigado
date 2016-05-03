@@ -263,7 +263,7 @@
 		deleteData: function(e){
             
             var location = this.location + 'Categories/' + e.model.category.__firebaseKey__;
-            var ref= new Firebase(location);
+            var ref = new Firebase(location);
             
 			ref.remove();
 		}

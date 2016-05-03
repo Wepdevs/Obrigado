@@ -113,12 +113,33 @@
 			if( name === ""){
 				validate = false;
 			}
-			
+            
+            var location = this.location + 'Languages/';
+            var ref = new Firebase(location);
+            
+            var entries = [];
 
 			if(validate){
 
 				this.$.dialog.toggle();
-				this.$.ref.add({name: name});
+                
+                ref.once('value', function(snap){
+                       snap.forEach(function(childSnap){
+                           var key = childSnap.key();
+                           if(!isNaN(key))
+                               entries.push({id: key});
+                       });
+                   
+                        // finding max Id among ones already present
+                        var max = 0;
+                        for(var i = 0; i < entries.length; i++){
+                                    if(entries[i].id > max)
+                                    max = entries[i].id;
+                        }
+                        
+                        var newId = Number(max) + Number(1);
+                        ref.child(newId).set({name: name});
+                });
 			}   
 				
 			
@@ -140,7 +161,10 @@
 
 		deleteData: function(e){
 
-			this.$.ref.removeByKey(e.model.language.__firebaseKey__);
+			var location = this.location + 'Languages/' + e.model.language.__firebaseKey__;
+            var ref = new Firebase(location);
+            
+			ref.remove();
 		}
 	});
 
