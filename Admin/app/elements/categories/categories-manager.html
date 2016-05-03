@@ -24,17 +24,6 @@
 
 </style>
 
-	<!--<firebase-collection id="ref"
-                             location="[[location]]Categories/"
-                             data = "{{categories}}">
-    </firebase-collection> -->
-
-    <!--<firebase-collection id="lang"
-                             location="[[location]]Languages/"
-                             data = "{{languages}}">
-    </firebase-collection>-->
-
-
     <paper-button raised on-tap="openCreate">NEW CATEGORY</paper-button>
 	<paper-dialog id="dialogCreatePosition" entry-animation="scale-up-animation"
 	              exit-animation="fade-out-animation">
@@ -81,9 +70,7 @@
 
        <template is="dom-repeat" items="{{categories}}" as="category">
 
-				<paper-dialog id="dialogPositionDetail">
-	        		
-        		</paper-dialog>
+				<paper-dialog id="dialogPositionDetail"></paper-dialog>
 
         		<div>
                     <iron-icon icon="{{category.icon}}"></iron-icon>

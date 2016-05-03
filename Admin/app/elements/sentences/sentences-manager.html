@@ -4,38 +4,25 @@
 <dom-module id="sentences-manager">
 
 <template>
-
-	<!--<firebase-collection id="categoryRef"
-                         location="[[location]]Categories/"
-                         data = "{{categories}}">
-    </firebase-collection>
-
-    <firebase-collection id="sentencesRef"
-                         location="[[location]]Sentences/"
-                         data = "{{sentences}}">
-    </firebase-collection>
-
-    <firebase-collection id="languagesRef"
-                         location="[[location]]Languages/"
-                         data = "{{languages}}">
-    </firebase-collection>-->
-
 	<paper-dropdown-menu label="Categories">
-	 	 <paper-menu class="dropdown-content" id="categoriesMenu" selected="{{chosenCategory}}" attr-for-selected="italiano">
+	 	 <paper-menu class="dropdown-content" id="categoriesMenu" selected="{{chosenCategory}}" attr-for-selected="key">
 	 	 		<paper-item italiano="tutte">tutte</paper-item>
 		 	 <template is="dom-repeat" items="{{categories}}" as="category">
-		   		 <paper-item italiano="[[category.italiano]]">[[category.italiano]]</paper-item>
+		   		 <paper-item key="[[category.__firebaseKey__]]">[[category.italiano]]</paper-item>
 			</template>
 	  	</paper-menu>
 	</paper-dropdown-menu>
 
 	<template is="dom-repeat" items="{{languages}}" as="language">
 		<paper-input label="[[language.name]]" id="[[language.name]]" class="language-input"></paper-input>
-
 	</template>
-
+    
 	<paper-button raised on-tap="addSentence">ADD SENTENCE</paper-button>
-
+    
+    <!--<template is="dom-repeat" items="{{sentences}}" as="sentence">
+    </template> -->
+    
+    
 	<template is="dom-repeat" items="{{sentences}}" as="sentence">
 		<template is="dom-if" if="{{isCategorySelected(sentence, chosenCategory)}}">
 			<paper-item>
@@ -45,7 +32,7 @@
 					<span>({{sentence.category}})</span>
 				</template>
 			</paper-item>
-		</template>
+		</template> 
 	</template>
 
 
@@ -86,8 +73,8 @@ Polymer({
 		},
 
 		chosenCategory:{
-			notify: true,
-			//value: "tutte"
+			notify: true
+		//	value: {__firebaseKey__ : ""}
 		},
 
 		location: {
@@ -124,20 +111,20 @@ Polymer({
 	},
 
 	addSentence: function(){
+           console.log(this.sentences);
+		// var data = new Object;
+		// var inputs = document.querySelectorAll('.language-input');
 
-		var data = new Object;
-		var inputs = document.querySelectorAll('.language-input');
 
+		// for (i = 0; i < inputs.length; i++) { 
 
-		for (i = 0; i < inputs.length; i++) { 
+		// 	data[inputs[i].getAttribute('id')] = inputs[i].value;
 
-			data[inputs[i].getAttribute('id')] = inputs[i].value;
+		// }
 
-		}
+		// data.category = this.chosenCategory;
 
-		data.category = this.chosenCategory;
-
-		this.$.sentencesRef.add(data);
+		// this.$.sentencesRef.add(data);
 	}, 
 
 
@@ -156,22 +143,19 @@ Polymer({
 			this.splice('userSentences',this.userSentences.length,0,{firebaseKey: key});
 			this.notifyPath('userSentences', this.userSentences.slice());
 	},
-
-
-
-	/*fireObrigado: function(e){
-
-		this.fire('obrigado', {data: e.model.sentence});
-	},*/
+    
 
 	isCategorySelected: function(sentence, chosenCategory){
-
+        
+        console.log(typeof(chosenCategory));
+        console.log(typeof(sentence.category));
+        
 		if(chosenCategory === undefined)
 			return false;
 		if(chosenCategory == "tutte")
 			return true;
 
-		return (sentence.category === chosenCategory);
+		return (sentence.category === chosenCategory.__firebaseKey__);
 	}, 
 
 	isAllSelected: function(chosenCategory){
