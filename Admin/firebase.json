@@ -1,0 +1,9 @@
+{
+  "firebase": "obrigadoadmin",
+  "public": "app",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
