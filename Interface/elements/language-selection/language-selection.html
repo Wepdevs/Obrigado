@@ -1,0 +1,42 @@
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+
+
+<dom-module id="language-selection">  
+<template>
+    
+    <firebase-collection location="[[location]]/Languages" data="{{languages}}"></firebase-collection>
+    
+    <paper-dropdown-menu label="From" id="fromDDL">
+        <paper-menu class="dropdown-content" selected="{{fromLanguage}}" attr-for-selected="name">
+            <template is="dom-repeat" items="{{languages}}" as="language">
+                <paper-item name="[[language.name]]">[[language.name]]</paper-item>
+            </template>
+        </paper-menu>
+    </paper-dropdown-menu>
+    <!--<paper-dropdown-menu label="To">
+        <paper-listbox class="dropdown-content">
+            <template is="dom-repeat" items="[[languages]]" as="language">
+                <template is="dom-if" if="isFrom"></template>
+                <paper-item>[[language.name]]</paper-item>
+            </template>
+        </paper-listbox>
+    </paper-dropdown-menu>-->
+</template>
+<script>
+    Polymer({
+        is : 'language-selection', 
+        
+        properties: {
+            location: String,
+            languages: Array,
+            fromLanguage: Object
+        }, 
+        
+        isFrom: function(e){
+            return e.model.language != this.fromLanguage.name;
+        }
+    })
+    
+</script>
+</dom-module>     

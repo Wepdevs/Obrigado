@@ -48,12 +48,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   {{fromLanguage}}//{{toLanguage}}
                 </div>
 
-                 <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="slide-from-top-animation" exit-animation="slide-down-animation">
-                 <neon-animatable><admin-page></admin-page></neon-animatable>
-                 <neon-animatable><catories-page on-category-selected="setCategory"></catories-page></neon-animatable>
-                 <neon-animatable><match-list category="[[selectedCategory]]"></match-list></neon-animatable>
-        <neon-animatable>4</neon-animatable>
-        <neon-animatable>5</neon-animatable>
+       <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="slide-from-top-animation" exit-animation="slide-down-animation">
+            <neon-animatable><language-selection location="[[location]]"></language-selection></neon-animatable>
+            <neon-animatable><categories-page on-category-selected="setCategory"></categories-page></neon-animatable>
+            <neon-animatable><match-list category="[[selectedCategory]]"></match-list></neon-animatable>
+            <neon-animatable>4</neon-animatable>
+            <neon-animatable>5</neon-animatable>
+            <neon-animatable><admin-page></admin-page></neon-animatable>
       </neon-animated-pages>
   </template>
   <script>
@@ -75,10 +76,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
       properties: {
-        selected:{value:1},
+        selected:{value:0},
         selectedCategory:{value:"",notify:true},
         fromLanguage: {value:"Italiano"},
-        toLanguage: {value:"English"}
+        toLanguage: {value:"English"},
+        location: {value: "https://popping-heat-2481.firebaseio.com/"}
       }
     });
   })();
