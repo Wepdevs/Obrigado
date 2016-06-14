@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       neon-animated-pages {
 
-        height:100vh;
+        height:10vh;
         width:100%;
       }
 
@@ -48,13 +48,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   {{fromLanguage}}//{{toLanguage}}
                 </div>
        <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="slide-from-top-animation" exit-animation="slide-down-animation">
-            <neon-animatable><language-selection location="[[location]]"></language-selection></neon-animatable>
+            <neon-animatable><language-selection location="[[location]]" from-language="{{fromLanguage}}" to-language="{{toLanguage}}"></language-selection></neon-animatable>
             <neon-animatable><categories-page on-category-selected="setCategory"></categories-page></neon-animatable>
             <neon-animatable><match-list category="[[selectedCategory]]"></match-list></neon-animatable>
             <neon-animatable>4</neon-animatable>
             <neon-animatable>5</neon-animatable>
             <neon-animatable><admin-page></admin-page></neon-animatable>
       </neon-animated-pages>
+      
+      <paper-button on-tap="showSentences" disabled$="{{_computeLanguageSelected(fromLanguage,toLanguage)}}">GO!!</paper-button>
   </template>
   <script>
   (function() {
@@ -77,10 +79,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         selected:{value:0},
         selectedCategory:{value:"",notify:true},
-        fromLanguage: {value:"Italiano"},
-        toLanguage: {value:"English"},
+        fromLanguage: {type: String, notify: true},
+        toLanguage: {type: String, notify: true},
         location: {value: "https://popping-heat-2481.firebaseio.com/"}
-      }
+      },
+      
+      _computeLanguageSelected: function(){
+          console.log("computing");
+          
+          console.log(typeof(this.toLanguage));
+          
+          return typeof(this.fromLanguage) != "undefined";
+        },
+        
+        
+        showSentences: function(){
+            console.log(typeof(this.fromLanguage) + " " + typeof(this.toLanguage));
+            return null;
+        }
+        
+        
     });
   })();
   </script>

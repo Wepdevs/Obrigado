@@ -20,7 +20,7 @@
     
     
     <paper-dropdown-menu label="To" id="toDDL">
-        <paper-menu class="dropdown-content" >
+        <paper-menu class="dropdown-content" selected="{{toLanguage}}" attr-for-selected="name">
             <template is="dom-repeat" items="[[languages]]" as="language">
                 <template is="dom-if" if="{{isFrom(language, fromLanguage)}}">
                     <paper-item name="[[language.name]]">[[language.name]]</paper-item>
@@ -41,17 +41,24 @@
         properties: {
             location: String,
             languages: Array,
-            fromLanguage: Object
+            fromLanguage: {
+                type: String,
+                notify: true
+            },
+            toLanguage: {
+                type: String,
+                notify: true
+            }
         }, 
         
         isFrom: function(language, fromLanguage){
-            console.log("evaluating from");
-            console.log(language.name + " " + fromLanguage);
+            //console.log("evaluating from");
+            //console.log(language.name + " " + fromLanguage);
             return language.name != fromLanguage;
         }, 
         
         logsel: function(){
-            console.log(this.fromLanguage);
+            console.log("from "+ this.fromLanguage + " to: " + this.toLanguage);
         }
     })
     
