@@ -1,4 +1,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
 
 
@@ -9,19 +12,27 @@
     
     <paper-dropdown-menu label="From" id="fromDDL">
         <paper-menu class="dropdown-content" selected="{{fromLanguage}}" attr-for-selected="name">
-            <template is="dom-repeat" items="{{languages}}" as="language">
+            <template is="dom-repeat" items="[[languages]]" as="language">
                 <paper-item name="[[language.name]]">[[language.name]]</paper-item>
             </template>
         </paper-menu>
     </paper-dropdown-menu>
-    <!--<paper-dropdown-menu label="To">
-        <paper-listbox class="dropdown-content">
+    
+    
+    <paper-dropdown-menu label="To" id="toDDL">
+        <paper-menu class="dropdown-content" >
             <template is="dom-repeat" items="[[languages]]" as="language">
-                <template is="dom-if" if="isFrom"></template>
-                <paper-item>[[language.name]]</paper-item>
+                <template is="dom-if" if="{{isFrom(language, fromLanguage)}}">
+                    <paper-item name="[[language.name]]">[[language.name]]</paper-item>
+                </template>
             </template>
-        </paper-listbox>
-    </paper-dropdown-menu>-->
+        </paper-menu>
+    </paper-dropdown-menu>
+    
+    
+    
+    
+    <paper-button on-tap="logsel">selected</paper-button>
 </template>
 <script>
     Polymer({
@@ -33,8 +44,14 @@
             fromLanguage: Object
         }, 
         
-        isFrom: function(e){
-            return e.model.language != this.fromLanguage.name;
+        isFrom: function(language, fromLanguage){
+            console.log("evaluating from");
+            console.log(language.name + " " + fromLanguage);
+            return language.name != fromLanguage;
+        }, 
+        
+        logsel: function(){
+            console.log(this.fromLanguage);
         }
     })
     
