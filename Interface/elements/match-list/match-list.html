@@ -25,10 +25,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                              location="https://popping-heat-2481.firebaseio.com/Sentences/"
                              data="{{senteces}}">
     </firebase-collection>
-    <template is="dom-repeat" items="[[senteces]]">
+    <!--<template is="dom-repeat" items="[[senteces]]">
       <div>[[item.italiano]]</div>
 
-    </template>
+    </template>  -->
+    
+    <template is="dom-repeat" items="[[senteces]]" as="sentence">
+        <!--<template is="dom-if" if="{{isCategorySelected(sentence)}}">
+            <div>[[sentence.italiano]]</div>
+        </template> -->
+        <div>{{getSentence(sentence)}}</div>
+      
+
+    </template> 
+    
+    
   </template>
   <script>
   (function() {
@@ -47,9 +58,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       getDb:function() {},
       properties: {
         sentences:{value:[]},
-       category:{observer:"categoryChanged"}
+        fromLanguage: {type: String,notify: true},
+        toLanguage: {type: String,notify: true},
+        selectedCategory: {type: Object,notify: true, observer:"categoryChanged"},
+      },
+      
+      isCategorySelected: function(sentence){
+          
+        //  console.log(sentence);
+         // console.log("asd" + this.categorySelected);
+          return true;//sentence.category == this.categorySelected;
+          
+      },
+      
+      
+      getSentence: function(sentence){
+          console.log("get sentence");
+          return sentence[this.fromLanguage];
+        //  return sentence[this.selectedCategory.]
       }
     });
   })();
+  
   </script>
 </dom-module>

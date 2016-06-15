@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       neon-animated-pages {
 
-        height:10vh;
+        height:50vh;
         width:100%;
       }
 
@@ -48,15 +48,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   {{fromLanguage}}//{{toLanguage}}
                 </div>
        <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="slide-from-top-animation" exit-animation="slide-down-animation">
-            <neon-animatable><language-selection location="[[location]]" from-language="{{fromLanguage}}" to-language="{{toLanguage}}"></language-selection></neon-animatable>
-            <neon-animatable><categories-page on-category-selected="setCategory"></categories-page></neon-animatable>
-            <neon-animatable><match-list category="[[selectedCategory]]"></match-list></neon-animatable>
+            <neon-animatable><language-selection location="[[location]]" selected-category="{{selectedCategory}}" from-language="{{fromLanguage}}" to-language="{{toLanguage}}"></language-selection></neon-animatable>
+            <neon-animatable><categories-page on-category-selected="setCategory" from-language="[[fromLanguage]]" to-language="[[toLanguage]]"></categories-page></neon-animatable>
+            <neon-animatable><match-list category="[[selectedCategory]]" from-language="[[fromLanguage]]" to-language="[[toLanguage]]"></match-list></neon-animatable>
             <neon-animatable>4</neon-animatable>
             <neon-animatable>5</neon-animatable>
             <neon-animatable><admin-page></admin-page></neon-animatable>
       </neon-animated-pages>
       
       <paper-button on-tap="showSentences" disabled$="{{_computeLanguageSelected(fromLanguage,toLanguage)}}">GO!!</paper-button>
+       <paper-button on-tap="back" >back</paper-button>
+       
   </template>
   <script>
   (function() {
@@ -67,8 +69,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       setCategory:function(e) {
           this.set("selectedCategory",e.detail);
-          console.log(this.selectedCategory)
-          this.selected=2;
+          console.log(this.selectedCategory);
+          //this.selected=2;
+          this.$.pages.selectNext();
 
       },
       openAdminPage:function() {
@@ -78,26 +81,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       properties: {
         selected:{value:0},
-        selectedCategory:{value:"",notify:true},
-        fromLanguage: {type: String, notify: true},
-        toLanguage: {type: String, notify: true},
+        selectedCategory:{type: Object, notify:true},
+        fromLanguage: {type: String, notify: true, value: ""},
+        toLanguage: {type: String, notify: true, value: ""},
         location: {value: "https://popping-heat-2481.firebaseio.com/"}
       },
       
       _computeLanguageSelected: function(){
-          console.log("computing");
           
-          console.log(typeof(this.toLanguage));
-          
-          return typeof(this.fromLanguage) != "undefined";
+          return !(this.fromLanguage != "" && this.toLanguage != "");
         },
         
         
         showSentences: function(){
-            console.log(typeof(this.fromLanguage) + " " + typeof(this.toLanguage));
-            return null;
-        }
+            this.$.pages.selectNext();
+        }, 
         
+        back: function(){
+            this.$.pages.selectPrevious();
+        }
         
     });
   })();

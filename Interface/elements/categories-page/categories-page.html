@@ -105,29 +105,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                              location="https://popping-heat-2481.firebaseio.com/Categories/"
                              data="{{categories}}">
     </firebase-collection>
-  <iron-list items="[[categories]]" as="item">
+  <iron-list items="[[categories]]" as="category">
       <template>
 
-        <div class="item" on-tap="categorySelected">
+        <div class="item" on-tap="selectCategory">
      
-        <div class="subItem" style$="{{computeLeftBorderColor(item)}}">
+        <div class="subItem" style$="{{computeLeftBorderColor(category)}}">
         <paper-ripple></paper-ripple>
 
       
-        <iron-icon icon="maps:local-dining"></iron-icon>
+        <iron-icon icon="[[category.icon]]"></iron-icon>
         <div class="category flex">
-          <div class="categoryTitle">[[getCategory(item)]]</div>
-          <div class="categoryDescription"> 
-            Why I am here?? Are you ready??
-
-          </div>
+          <div class="categoryTitle">{{getCategory(category)}}</div>
           <div class="categoryInfos">
-            <iron-icon icon="shopping-cart"></iron-icon> 
+            <iron-icon icon="[[category.icon]]"></iron-icon> 
             <div class="number">14</div>
             <div style="width:12px"></div>
             <iron-icon icon="icons:star"></iron-icon> 
-
-
           </div>
           </div>
           <div style="height:64px;line-height:64px"><iron-icon icon="icons:chevron-right"></iron-icon>
@@ -140,12 +134,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     'use strict';
 
     Polymer({
-      getCategory:function(item) {
-        console.log(item)
-        return item[this.motherLanguage]
-
-      },
+     
       is: 'categories-page',
+      
+      
+      properties: {
+         fromLanguage: {
+                type: String,
+                notify: true
+            },
+            toLanguage: {
+                type: String,
+                notify: true
+            },
+              selectedCategory: {
+                type: Object,
+                notify: true
+            },
+           categories:{value:[]}
+      },
 
       computeLeftBorderColor:function(i) {
           if (i.english=="school")
@@ -154,14 +161,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return "border-color:green"  
       },
 
-      categorySelected:function(e) {
-        this.fire("category-selected",e.model.item)
+      selectCategory:function(e) {
+         this.fire("category-selected",e.model.category);
       },
+      
+      
+       getCategory:function(category, from) {
+        console.log('getting category');
+        return category[this.fromLanguage];
 
-      properties: {
-        motherLanguage:{value:"italiano"},
-        categories:{value:[]}
       }
+
+      
     });
   })();
   </script>

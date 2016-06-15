@@ -28,11 +28,6 @@
             </template>
         </paper-menu>
     </paper-dropdown-menu>
-    
-    
-    
-    
-    <paper-button on-tap="logsel">selected</paper-button>
 </template>
 <script>
     Polymer({
@@ -55,10 +50,6 @@
             //console.log("evaluating from");
             //console.log(language.name + " " + fromLanguage);
             return language.name != fromLanguage;
-        }, 
-        
-        logsel: function(){
-            console.log("from "+ this.fromLanguage + " to: " + this.toLanguage);
         }
     })
     
