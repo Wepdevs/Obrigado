@@ -175,10 +175,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       computeLeftBorderColor:function(i) {
-          if (i.english=="school")
-          return "border-color:red"
-          if (i.english=="Job") return "border-color:blue"
-          return "border-color:green"  
+       if(i.__firebaseKey__ % 6 == 0)
+              return "border-color:yellow" 
+          if(i.__firebaseKey__ % 5 == 0)
+              return "border-color:orange" 
+          if(i.__firebaseKey__ % 4 == 0)
+              return "border-color:red" 
+               if(i.__firebaseKey__ % 3 == 0)
+              return "border-color:blue" 
+               if(i.__firebaseKey__ % 2 == 0)
+              return "border-color:green" 
       },
 
       selectCategory:function(e) {
