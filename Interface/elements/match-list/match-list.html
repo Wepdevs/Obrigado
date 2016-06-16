@@ -20,25 +20,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-
    <firebase-collection id="ref"
                              location="https://popping-heat-2481.firebaseio.com/Sentences/"
                              data="{{senteces}}">
     </firebase-collection>
-    <!--<template is="dom-repeat" items="[[senteces]]">
-      <div>[[item.italiano]]</div>
-
-    </template>  -->
     
-    <template is="dom-repeat" items="[[senteces]]" as="sentence">
+    <template is="dom-repeat" items="[[senteces]]" as="sentence" id="sentenceList" filter="isCategorySelected">
         <!--<template is="dom-if" if="{{isCategorySelected(sentence)}}">
             <div>[[sentence.italiano]]</div>
         </template> -->
-        <div>{{getSentence(sentence)}}</div>
-      
-
+        <h1>{{getSentenceTo(sentence, selectedCategory, toLanguage)}}</h1>
+        <h3>{{getSentenceFrom(sentence, selectedCategory, fromLanguage)}}</h3>
     </template> 
     
+   
     
   </template>
   <script>
@@ -47,9 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     Polymer({
       categoryChanged:function(){
-
-          console.log(this.category)
-
+          console.log("category changed");
       },
       is: 'match-list',
       dataO:function() {
@@ -60,22 +53,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         sentences:{value:[]},
         fromLanguage: {type: String,notify: true},
         toLanguage: {type: String,notify: true},
-        selectedCategory: {type: Object,notify: true, observer:"categoryChanged"},
+        selectedCategory: {type: Object, notify: true, observer:"_handleCategoryChange"},
       },
       
       isCategorySelected: function(sentence){
           
-        //  console.log(sentence);
-         // console.log("asd" + this.categorySelected);
-          return true;//sentence.category == this.categorySelected;
+          console.log('filtering');
+          
+          if(typeof(this.selectedCategory) != "undefined")
+            return sentence.category == this.selectedCategory.__firebaseKey__;
+          else
+             return false;
           
       },
       
       
-      getSentence: function(sentence){
-          console.log("get sentence");
+      getSentenceFrom: function(sentence){
           return sentence[this.fromLanguage];
-        //  return sentence[this.selectedCategory.]
+      },
+      
+      getSentenceTo: function(sentence){
+          return sentence[this.toLanguage];
+      },
+      
+      
+      _handleCategoryChange: function(){
+            console.log('category changed');
+            this.$.sentenceList.render();
       }
     });
   })();

@@ -50,7 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="slide-from-top-animation" exit-animation="slide-down-animation">
             <neon-animatable><language-selection location="[[location]]" selected-category="{{selectedCategory}}" from-language="{{fromLanguage}}" to-language="{{toLanguage}}"></language-selection></neon-animatable>
             <neon-animatable><categories-page on-category-selected="setCategory" from-language="[[fromLanguage]]" to-language="[[toLanguage]]"></categories-page></neon-animatable>
-            <neon-animatable><match-list category="[[selectedCategory]]" from-language="[[fromLanguage]]" to-language="[[toLanguage]]"></match-list></neon-animatable>
+            <neon-animatable><match-list selected-category="[[selectedCategory]]" from-language="[[fromLanguage]]" to-language="[[toLanguage]]"></match-list></neon-animatable>
             <neon-animatable>4</neon-animatable>
             <neon-animatable>5</neon-animatable>
             <neon-animatable><admin-page></admin-page></neon-animatable>
@@ -69,7 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       setCategory:function(e) {
           this.set("selectedCategory",e.detail);
-          console.log(this.selectedCategory);
+          //console.log(this.selectedCategory);
           //this.selected=2;
           this.$.pages.selectNext();
 
