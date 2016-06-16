@@ -105,8 +105,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                              location="https://popping-heat-2481.firebaseio.com/Categories/"
                              data="{{categories}}">
     </firebase-collection>
-  <iron-list items="[[categories]]" as="category">
-      <template>
+ <!-- <iron-list items="[[categories]]" as="category" >
+      <template id="categoryListTemplate">
 
         <div class="item" on-tap="selectCategory">
      
@@ -127,7 +127,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div style="height:64px;line-height:64px"><iron-icon icon="icons:chevron-right"></iron-icon>
         </div>
       </template>
-    </iron-list>
+    </iron-list>   -->
+    
+    <template is="dom-repeat" id="categoryList" items="{{categories}}" as="category">
+         <div class="item" on-tap="selectCategory">
+            <div class="subItem" style$="{{computeLeftBorderColor(category)}}">
+            <paper-ripple></paper-ripple>
+            <iron-icon icon="[[category.icon]]"></iron-icon>
+            <div class="category flex">
+            <div class="categoryTitle">[[getCategory(category, fromLanguage)]]</div>
+            <div class="categoryInfos">
+                <iron-icon icon="[[category.icon]]"></iron-icon> 
+                <div class="number">14</div>
+                <div style="width:12px"></div>
+                <iron-icon icon="icons:star"></iron-icon> 
+            </div>
+          </div>
+          <div style="height:64px;line-height:64px"><iron-icon icon="icons:chevron-right"></iron-icon>
+        </div>
+    </template>
+    
   </template>
   <script>
   (function() {
@@ -141,7 +160,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
          fromLanguage: {
                 type: String,
-                notify: true
+                notify: true,
+                observer: "_handleFromLanguageChange"
             },
             toLanguage: {
                 type: String,
@@ -166,11 +186,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       
       
-       getCategory:function(category, from) {
+       getCategory:function(category,fromLanguage) {
         console.log('getting category');
+        console.log(category);
+       // console.log(e.model.category);
         return category[this.fromLanguage];
 
-      }
+      },
+      
+       _handleFromLanguageChange: function(){
+            
+            console.log('fromLanguage changed');
+           
+            this.$.categoryList.render();
+       }
+      
 
       
     });
